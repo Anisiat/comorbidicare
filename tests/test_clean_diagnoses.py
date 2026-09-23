@@ -200,6 +200,7 @@ def test_conflicting_admission_dates_are_rejected(diagnoses_df, spell_admission_
         clean_diagnoses(diagnoses_df, pd.concat([spell_admission_dates_df, duplicate]))
 
 
+@pytest.mark.filterwarnings("ignore:Could not infer format:UserWarning")
 def test_invalid_dates_leave_date_and_source_missing(diagnoses_df, spell_admission_dates_df):
     diagnoses_df['diagnosis_date'] = 'invalid'
     spell_admission_dates_df['admission_date'] = 'invalid'
@@ -212,3 +213,11 @@ def test_empty_diagnoses_preserve_output_schema(diagnoses_df, spell_admission_da
     result = clean_diagnoses(diagnoses_df.iloc[:0], spell_admission_dates_df)
     assert result.empty
     assert {'subject', 'diagnosis_date', 'admission_date', 'comorbidity_date', 'comorbidity_date_source'} <= set(result.columns)
+
+def test_duplicate_columns_error(diagnoses_df):
+
+    diagnoses = pd.concat([diagnoses_df, diagnoses_df], axis=1)
+
+
+    with pytest.raises(ValueError, match="Duplicate"):
+        clean_diagnoses(diagnoses)

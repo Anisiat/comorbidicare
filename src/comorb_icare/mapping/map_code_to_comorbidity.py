@@ -118,18 +118,11 @@ def map_codes_to_comorbidities(
     if code_type not in {"icd", "snomed", "medication"}:
         raise ValueError("code_type must be one of 'icd', 'snomed', or 'medication'.")
 
-    if code_col not in df.columns:
-        raise ValueError(
-            f"df does not contain code column '{code_col}'."
-        )
-    
-    if "subject" not in df.columns:
-        raise ValueError("df must contain 'subject'.")
+    required_columns = ["subject", code_col, date_col]
 
-    if date_col not in df.columns:
-        raise ValueError(
-            f"df does not contain date column '{date_col}'."
-        )
+    for col in required_columns:
+        if col not in df.columns:
+            raise ValueError(f"df must contain '{col}' column.")
 
     # Preserve the mapped code and choose the source-specific evidence date.
     df["comorbidity_code_value"] = df[code_col].astype("string")

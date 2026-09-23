@@ -29,7 +29,7 @@ def clean_problems(problems_df: pd.DataFrame) -> pd.DataFrame:
     pd.DataFrame
         Copy with normalised column names, stripped string identifiers and
         codes, and parsed dates. Invalid dates become ``NaT``. Rows without
-        both a code and a description are removed, as are duplicate rows.
+        a code are removed, as are duplicate rows.
 
     Raises
     ------
@@ -70,13 +70,8 @@ def clean_problems(problems_df: pd.DataFrame) -> pd.DataFrame:
         errors="coerce",
     )
 
-    # Keep records with a code or description.
-    comorbidity_columns = [
-        column
-        for column in ("problem_code", "problem_desc")
-        if column in df.columns
-    ]
-    df = df.dropna(subset=comorbidity_columns, how="all")
+    # Keep records with a code
+    df = df.dropna(subset=["problem_code"], how="all")
 
     # Remove duplicate records and reset the index.
     return df.drop_duplicates().reset_index(drop=True)
