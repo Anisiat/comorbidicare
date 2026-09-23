@@ -18,7 +18,7 @@ from comorb_icare.features import build_comorbidity_features
 
 cohort = pd.DataFrame({
     "subject": ["example-1"],
-    "spell_id": ["spell-1"],
+    "spell_identifier": ["spell-1"],
     "admission_date": ["2025-02-01"],
 })
 diagnoses = pd.DataFrame({

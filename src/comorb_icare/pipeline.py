@@ -13,7 +13,7 @@ def build_comorbidity_table(
     prescriptions_df: pd.DataFrame | None = None,
     problems_df: pd.DataFrame | None = None,
     cutoff_col: str = "discharge_date",
-    spell_col: str = "spell_id",
+    spell_col: str = "spell_identifier",
     admission_date_col: str = "admission_date",
     cci_score: bool = False,
         
@@ -38,7 +38,7 @@ def build_comorbidity_table(
         Mapped comorbidity table containing ``subject``, ``comorbidity``, and ``comorbidity_date`` derived from problems.
     cutoff_col : str, default="discharge_date"
         Column in ``cohort_df`` defining the start of the prediction window.
-    spell_col : str, default="spell_id"
+    spell_col : str, default="spell_identifier"
         Column identifying each spell.
     cci_score : bool, default=False
         Include CCI score in output table.
@@ -78,7 +78,7 @@ def build_comorbidity_table(
 
     spell_dates = spell_dates.rename(
         columns={
-            spell_col: "spell_id",
+            spell_col: "spell_identifier",
             admission_date_col: "admission_date",
         }
     )

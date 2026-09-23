@@ -32,12 +32,17 @@ def clean_diagnoses(
     spell_admission_dates_df : pd.DataFrame, optional
         Optional table containing spell admission dates for approximate
         diagnosis-date inference. If provided, it must contain:
-        ``spell_id`` and ``admission_date``.
+        "subject", "spell_identifier" and "admission_date".
+        When provided, this table replaces any existing ``admission_date``
+        column in diagnoses_df. Unmatched spells have a missing admission date.
 
     Returns
     -------
     pd.DataFrame
-        Cleaned diagnoses table containing the original diagnosis fields,
+        Cleaned diagnoses table containing the original diagnosis fields (subject, spell_identifier, diagnosis_date, diagnosis_code_icd, diagnosis_code_snomed, diagnosis_desc_icd, diagnosis_desc_snomed) and the following additional fields:
+        - ``comorbidity_date``: best available date for the diagnosis evidence.
+        - ``comorbidity_date_source``: source used to derive ``comorbidity_date``.
+        - ``admission_date``: the date the spell was admitted (if available).
         plus:
 
     - ``comorbidity_date``: best available date for the diagnosis evidence.
@@ -57,6 +62,10 @@ def clean_diagnoses(
     If spell admission dates are supplied, ``comorbidity_date`` is populated
     using ``diagnosis_date`` where available and ``admission_date`` as a
     fallback.
+
+    The ``comorbidity_date_source`` column indicates which source was used
+
+    Valid comorbidity date is not required and can be returned as NaT if both diagnosis and admission dates are missing.
     """
 
     # Normalise column names on a copy.
@@ -94,7 +103,7 @@ def clean_diagnoses(
         "diagnosis_code_snomed",
         "diagnosis_desc_icd",
         "diagnosis_desc_snomed",
-        "spell_id",
+        "spell_identifier",
     ):
         if column in df.columns:
             df[column] = _clean_optional_string(df[column])
@@ -129,7 +138,8 @@ def clean_diagnoses(
             )
 
         required_spell_columns = {
-            "spell_id",
+            "subject",
+            "spell_identifier",
             "admission_date",
         }
 
@@ -141,16 +151,19 @@ def clean_diagnoses(
                 f"{sorted(missing)}"
             )
 
-        if "spell_id" not in df.columns:
+        # Check spell id column exists in diagnoses_df if spell_admission_dates_df is provided.
+        if "spell_identifier" not in df.columns:
             raise ValueError(
-                "diagnoses_df must contain 'spell_id' when "
+                "diagnoses_df must contain 'spell_identifier' when "
                 "spell_admission_dates_df is provided."
             )
 
-        spell_dates["spell_id"] = _clean_optional_string(spell_dates["spell_id"])
+        spell_dates["spell_identifier"] = _clean_optional_string(spell_dates["spell_identifier"])
+        df['spell_identifier'] = _clean_optional_string(df['spell_identifier'])
+        spell_dates["subject"] = _clean_optional_string(spell_dates["subject"])
 
         # Prevent missing spell identifiers from matching.
-        spell_dates = spell_dates.dropna(subset=["spell_id"])
+        spell_dates = spell_dates.dropna(subset=['subject',"spell_identifier"])
 
         # Coerce invalid admission dates to NaT.
         spell_dates["admission_date"] = pd.to_datetime(
@@ -159,19 +172,24 @@ def clean_diagnoses(
         )
 
         # Remove any duplicate records for the same spell IDs.
+        spell_dates = spell_dates.drop_duplicates(
+            subset=["subject", "spell_identifier", "admission_date"]
+        )
 
-        spell_dates = spell_dates.drop_duplicates()
-
-        if spell_dates["spell_id"].duplicated().any():
+        if spell_dates.duplicated(subset=["subject", "spell_identifier"]).any():
             raise ValueError(
                 "spell_admission_dates_df contains multiple records "
-                "for the same spell_id."
+                "for the same spell_identifier."
             )
 
-        # Attach admission dates by spell.
+        # Use the supplied admission table as the source of admission dates.
+        # Remove any existing column to prevent merge suffixes (_x and _y).
+        df = df.drop(columns=["admission_date"], errors="ignore")
+
+        # Attach admission dates by subject and spell.
         df = df.merge(
-            spell_dates[["spell_id", "admission_date"]],
-            on="spell_id",
+            spell_dates[['subject', 'spell_identifier', 'admission_date']],
+            on=["subject", "spell_identifier"],
             how="left",
         )
 
