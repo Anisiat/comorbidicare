@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from comorb_icare.features import CCI_COMORBIDITIES, build_comorbidity_features
+from comorbidicare.features import CCI_COMORBIDITIES, build_comorbidity_features
 
 
 def _evidence(subject, comorbidity, date):

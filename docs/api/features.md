@@ -12,9 +12,9 @@ cleaning, mapping, and feature-building steps.
 ```python
 import pandas as pd
 
-from comorb_icare.cleaning.clean_diagnoses import clean_diagnoses
-from comorb_icare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
-from comorb_icare.features import build_comorbidity_features
+from comorbidicare.cleaning.clean_diagnoses import clean_diagnoses
+from comorbidicare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
+from comorbidicare.features import build_comorbidity_features
 
 cohort = pd.DataFrame({
     "subject": ["example-1"],
@@ -49,6 +49,6 @@ features = build_comorbidity_features(
 # myocardial_infarction = 1; cci_score = 1
 ```
 
-::: comorb_icare.features.build_comorbidity_features
+::: comorbidicare.features.build_comorbidity_features
     options:
       heading_level: 2

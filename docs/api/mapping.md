@@ -15,16 +15,16 @@ Only map code columns that exist in your cleaned table. Map ICD and SNOMED
 separately if you want evidence from both diagnosis code systems.
 
 ```python
-from comorb_icare.mapping import load_mapping
-from comorb_icare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
+from comorbidicare.mapping import load_mapping
+from comorbidicare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
 
 icd_mapping = load_mapping("icd")
 ```
 
-::: comorb_icare.mapping.load_mapping
+::: comorbidicare.mapping.load_mapping
     options:
       heading_level: 2
 
-::: comorb_icare.mapping.map_code_to_comorbidity.map_codes_to_comorbidities
+::: comorbidicare.mapping.map_code_to_comorbidity.map_codes_to_comorbidities
     options:
       heading_level: 2

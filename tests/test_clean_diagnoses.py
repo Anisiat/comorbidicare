@@ -1,7 +1,7 @@
 import pytest 
 import pandas as pd 
 
-from comorb_icare.cleaning.clean_diagnoses import clean_diagnoses
+from comorbidicare.cleaning.clean_diagnoses import clean_diagnoses
 
 
 @pytest.fixture

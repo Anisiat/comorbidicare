@@ -1,6 +1,6 @@
 import pytest 
 import pandas as pd 
-from comorb_icare.cleaning.clean_prescriptions import clean_prescriptions
+from comorbidicare.cleaning.clean_prescriptions import clean_prescriptions
 
 
 def test_duplicate_columns_after_normalisation_raise(raw_prescriptions_df):

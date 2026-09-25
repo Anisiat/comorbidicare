@@ -9,12 +9,12 @@ import importlib
 import pandas as pd
 import pytest
 
-from comorb_icare.features import CCI_COMORBIDITIES
+from comorbidicare.features import CCI_COMORBIDITIES
 
 
 def test_pipeline_module_imports():
     """The pipeline module must import without error."""
-    module = importlib.import_module("comorb_icare.pipeline")
+    module = importlib.import_module("comorbidicare.pipeline")
     assert hasattr(module, "build_comorbidity_table")
 
 
@@ -22,7 +22,7 @@ def test_end_to_end_flags_and_cci_score(
     cohort_df, raw_diagnoses_df, raw_problems_df, raw_prescriptions_df
 ):
     """Raw iCARE tables in, one row per spell with flags and a CCI score out."""
-    from comorb_icare.pipeline import build_comorbidity_table
+    from comorbidicare.pipeline import build_comorbidity_table
 
     features = build_comorbidity_table(
         cohort_df=cohort_df,
@@ -54,7 +54,7 @@ def test_end_to_end_flags_and_cci_score(
 
 def test_single_evidence_table_is_enough(cohort_df, raw_problems_df):
     """Users may provide only one of the three source tables."""
-    from comorb_icare.pipeline import build_comorbidity_table
+    from comorbidicare.pipeline import build_comorbidity_table
 
     features = build_comorbidity_table(
         cohort_df=cohort_df,
@@ -73,7 +73,7 @@ def test_undated_diagnosis_falls_back_to_spell_admission_date(cohort_df):
     Uses the raw iCARE ``spell_identifier`` column. Most iCARE diagnosis dates
     are missing, so this fallback is what makes diagnosis evidence usable.
     """
-    from comorb_icare.pipeline import build_comorbidity_table
+    from comorbidicare.pipeline import build_comorbidity_table
 
     cohort = pd.concat(
         [
@@ -105,14 +105,14 @@ def test_undated_diagnosis_falls_back_to_spell_admission_date(cohort_df):
 
 
 def test_requires_at_least_one_evidence_table(cohort_df):
-    from comorb_icare.pipeline import build_comorbidity_table
+    from comorbidicare.pipeline import build_comorbidity_table
 
     with pytest.raises(ValueError, match="At least one"):
         build_comorbidity_table(cohort_df=cohort_df)
 
 
 def test_cohort_missing_required_column_raises(raw_problems_df):
-    from comorb_icare.pipeline import build_comorbidity_table
+    from comorbidicare.pipeline import build_comorbidity_table
 
     cohort = pd.DataFrame(
         {"subject": ["s1"], "admission_date": ["2025-06-01"]}

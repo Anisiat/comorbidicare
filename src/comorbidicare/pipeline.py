@@ -2,7 +2,7 @@ import pandas as pd
 from .cleaning.clean_diagnoses import clean_diagnoses
 from .cleaning.clean_prescriptions import clean_prescriptions
 from .cleaning.clean_problems import clean_problems
-from .mapping import map_comorbidities_to_cci
+from .mapping.map_code_to_comorbidity import map_codes_to_comorbidities
 from .features import build_comorbidity_features
 import logging
 logger = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ def build_comorbidity_table(
     ]
 
     mapped_evidence_tables = [
-        map_comorbidities_to_cci(df) for df in provided_evidence_tables
+        map_codes_to_comorbidities(df) for df in provided_evidence_tables
     ]
 
     logger.info('Building spell-level binary comorbidity features...')

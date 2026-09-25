@@ -7,9 +7,9 @@ never trigger these, which is why they are grouped here.
 
 import pandas as pd
 
-from comorb_icare.cleaning.clean_problems import clean_problems
-from comorb_icare.features import build_comorbidity_features
-from comorb_icare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
+from comorbidicare.cleaning.clean_problems import clean_problems
+from comorbidicare.features import build_comorbidity_features
+from comorbidicare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
 
 
 def test_float_typed_snomed_codes_still_match():

@@ -35,7 +35,7 @@ def load_mapping(mapping_type: str) -> pd.DataFrame:
 
     filename, code_column = MAPPING_OPTIONS[mapping_type]
 
-    data_directory = files("comorb_icare").joinpath("data")
+    data_directory = files("comorbidicare").joinpath("data")
 
     with data_directory.joinpath(filename).open("rb") as source:
         mapping = pd.read_csv(

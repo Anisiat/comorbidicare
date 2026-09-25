@@ -25,7 +25,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-comorb_icare = ["data/*.csv"]
+comorbidicare = ["data/*.csv"]
 
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"

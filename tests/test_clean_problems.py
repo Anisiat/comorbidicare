@@ -1,6 +1,6 @@
 import pytest 
 import pandas as pd 
-from comorb_icare.cleaning.clean_problems import clean_problems
+from comorbidicare.cleaning.clean_problems import clean_problems
 
 @pytest.mark.parametrize('required_column', ["SUBJECT","PROBLEM_CODE","PROBLEM_DT_TM"])
 def test_required_columns_are_present(required_column, raw_problems_df):

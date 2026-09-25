@@ -1,4 +1,4 @@
-# Ideas for comorb_icare
+# Ideas for comorbidicare
 
 Once the tests are green the package runs end to end. These are things I think would take it from "works" to "really good".
 
@@ -186,13 +186,13 @@ A small `scripts/validate_cohort.py` that runs all of this on parquet files and 
 ### 10. Import everything from the package root   *(tiny)*
 
 ```python
-# comorb_icare/__init__.py
+# comorbidicare/__init__.py
 from .pipeline import build_comorbidity_table
 from .cleaning import clean_diagnoses, clean_problems, clean_prescriptions
 ... etc, plus __version__ and __all__
 ```
 
-Then users can write `from comorb_icare import build_comorbidity_table`.
+Then users can write `from comorbidicare import build_comorbidity_table`.
 
 ---
 

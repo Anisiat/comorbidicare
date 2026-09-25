@@ -3,10 +3,10 @@
 import pandas as pd
 import pytest
 
-from comorb_icare.features import CCI_COMORBIDITIES
-from comorb_icare.mapping._loaders import load_mapping
-from comorb_icare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
-from comorb_icare.mapping.map_code_to_comorbidity import _get_icd_prefixes, _match_icd_code
+from comorbidicare.features import CCI_COMORBIDITIES
+from comorbidicare.mapping._loaders import load_mapping
+from comorbidicare.mapping.map_code_to_comorbidity import map_codes_to_comorbidities
+from comorbidicare.mapping.map_code_to_comorbidity import _get_icd_prefixes, _match_icd_code
 
 @pytest.mark.parametrize(
     ("mapping_type", "code_column"),
