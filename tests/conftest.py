@@ -94,3 +94,10 @@ def raw_prescriptions_df():
             "UPDATE_DT_TM": ["2024-05-02", "2024-05-04", "2024-05-06"],
         }
     )
+
+pytest.fixture
+def clean_diagnoses_df(raw_diagnoses_df):
+    """Cleaned diagnoses table with lowercase column names."""
+    return raw_diagnoses_df.rename(
+        columns={col: col.lower() for col in raw_diagnoses_df.columns}
+    )

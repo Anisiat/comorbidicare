@@ -54,8 +54,11 @@ def _calculate_cci_score(df):
 def build_comorbidity_features(
     cohort_df: pd.DataFrame,
     evidence_tables: list[pd.DataFrame],
-    cutoff_col: str,
+    subject_col: str = "subject",
+    cutoff_col: str = "discharge_date",
     spell_col: str = "spell_identifier",
+    comorbidity_col: str = "comorbidity",
+    comorbidity_date_col: str = "comorbidity_date",
     cci_score: bool = False, 
 ) -> pd.DataFrame:
     """Build spell-level binary comorbidity features from mapped evidence.
@@ -67,13 +70,13 @@ def build_comorbidity_features(
     Parameters
     ----------
     cohort_df : pd.DataFrame
-        Cohort containing ``subject``, the spell identifier, and cutoff date (e.g. admission_date).
+        Cohort containing ``subject``, the spell identifier, and cutoff date (e.g. discharge_date).
     evidence_tables : list[pd.DataFrame]
         One or more mapped comorbidity tables containing ``subject``,
         ``comorbidity``, and ``comorbidity_date``.
     cutoff_col : str
         Column in ``cohort_df`` defining the start of the prediction window,
-        for example ``admission_date``.
+        for example ``discharge_date``.
     spell_col : str, default="spell_identifier"
         Column identifying each spell.
     cci_score : bool, default=False
@@ -102,7 +105,7 @@ def build_comorbidity_features(
     """
 
     required_cohort_columns = {
-        "subject",
+        subject_col,
         spell_col,
         cutoff_col,
     }
@@ -117,9 +120,9 @@ def build_comorbidity_features(
         raise ValueError("At least one comorbidity evidence table is required.")
 
     required_evidence_columns = [
-        "subject",
-        "comorbidity",
-        "comorbidity_date",
+        subject_col,
+        comorbidity_col,
+        comorbidity_date_col,
     ]
 
     for i, table in enumerate(evidence_tables):
@@ -131,6 +134,7 @@ def build_comorbidity_features(
                 f"{missing_columns}"
             )
 
+
     # Combine evidence from all available sources.
     evidence = pd.concat(
         [table[required_evidence_columns] for table in evidence_tables],
@@ -139,7 +143,7 @@ def build_comorbidity_features(
 
     # Standardise dates.
     cohort = cohort_df[
-        ["subject", spell_col, cutoff_col]
+        [subject_col, spell_col, cutoff_col]
     ].copy()
 
     cohort[cutoff_col] = pd.to_datetime(
@@ -147,8 +151,8 @@ def build_comorbidity_features(
         errors="coerce",
     )
 
-    evidence["comorbidity_date"] = pd.to_datetime(
-        evidence["comorbidity_date"],
+    evidence[comorbidity_date_col] = pd.to_datetime(
+        evidence[comorbidity_date_col],
         errors="coerce",
     )
 
@@ -160,20 +164,20 @@ def build_comorbidity_features(
 
     # Remove records that cannot contribute a mapped comorbidity.
     evidence = evidence.dropna(
-        subset=["subject", "comorbidity", "comorbidity_date"] 
+        subset=[subject_col, comorbidity_col, comorbidity_date_col] 
     )
 
     # Give each evidence record the cutoff date for every spell
     # belonging to that subject.
     evidence = evidence.merge(
         cohort,
-        on="subject",
+        on=subject_col,
         how="inner",
     )
 
     # Check that all comorbidities in the evidence are recognised.
     observed_comorbidities = set(
-    evidence["comorbidity"].dropna().unique()
+    evidence[comorbidity_col].dropna().unique()
     )
 
     unknown_comorbidities = (
@@ -182,27 +186,27 @@ def build_comorbidity_features(
 
     if unknown_comorbidities:
         raise ValueError(
-            "Evidence contains unrecognised comorbidities: "
+            "Evidence contains unknown comorbidities: "
             f"{sorted(unknown_comorbidities)}"
         )
 
     # Only information available before admission is historical evidence.
     past_evidence = evidence[
-        evidence["comorbidity_date"] < evidence[cutoff_col]
+        evidence[comorbidity_date_col] < evidence[cutoff_col]
     ].copy() 
 
     # Multiple codes/sources for the same comorbidity only need to
     # contribute one positive flag.
     past_evidence = past_evidence.drop_duplicates(
-        subset=["subject", spell_col, "comorbidity"]
+        subset=[subject_col, spell_col, comorbidity_col]
     )
 
     past_evidence["present"] = 1
 
     # Convert long comorbidity evidence into binary wide features.
     features = past_evidence.pivot_table(
-        index=["subject", spell_col],
-        columns="comorbidity",
+        index=[subject_col, spell_col],
+        columns=comorbidity_col,
         values="present",
         aggfunc="max",
         fill_value=0,
@@ -219,10 +223,10 @@ def build_comorbidity_features(
 
     # Add spells with no historical comorbidity evidence.
     features = cohort[
-        ["subject", spell_col]
+        [subject_col, spell_col]
     ].drop_duplicates().merge(
         features,
-        on=["subject", spell_col],
+        on=[subject_col, spell_col],
         how="left",
     )
 
