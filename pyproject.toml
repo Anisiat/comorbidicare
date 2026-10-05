@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "comorb-icare"
+name = "comorbidicare"
 version = "0.1.0"
 description = "Utilities for deriving the 17 CCI comorbidities and index from icare tables (diagnoses, problems, prescribing)"
 readme = "README.md"
@@ -16,7 +16,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest"]
+    "pytest", 
+    'pytest-cov']
 
 [tool.setuptools]
 package-dir = {"" = "src"}

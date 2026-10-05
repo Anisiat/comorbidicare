@@ -11,7 +11,7 @@ def one_spell_cohort():
         {
             "subject": ["s1"],
             "spell_identifier": ["A1"],
-            "admission_date": ["2025-02-01"],
+            "discharge_date": ["2025-02-01"],
         }
     )
 
@@ -53,7 +53,7 @@ def medications():
             "comorbidity": ["renal_disease", "aids_hiv"],
             "comorbidity_date": ["2025-01-01", "2025-01-01"]
         }
-    )   
+    )
 
 
 @pytest.mark.parametrize(
@@ -81,68 +81,19 @@ def test_raises_if_required_cohort_column_missing(missing_column, cohort_df):
             evidence_tables=[evidence],
         )
 
-@pytest.mark.parametrize(
-    "missing_custom_cohort_column",
-    [
-        "subject_id",
-        "spell",
-        "cutoff",
-    ],
-)
-def test_raises_if_required_custom_cohort_column_missing(cohort_df, missing_custom_cohort_column):
+def test_features_require_canonical_columns(cohort_df, diagnoses):
+    renamed = cohort_df.rename(columns={"subject": "patient_id"})
+    with pytest.raises(ValueError, match="missing required columns.*subject"):
+        build_comorbidity_features(renamed, [diagnoses])
 
-    cohort = cohort_df.rename(
-        columns={
-            "subject": "subject_id",
-            "spell_identifier": "spell",
-            "discharge_date": "cutoff",
-        }
-    ).drop(columns= missing_custom_cohort_column)
 
-    evidence = pd.DataFrame(
-        {
-            "subject": [1],
-            "comorbidity": ["renal_disease"],
-            "comorbidity_date": ["2025-01-01"],
-        }
-    )
+def test_features_signature_uses_fixed_schema():
+    import inspect
 
-    with pytest.raises(ValueError, match="missing required columns"):
-        build_comorbidity_features(
-            cohort_df=cohort,
-            evidence_tables=[evidence],
-            subject_col="subject_id",
-            spell_col="spell",
-            cutoff_col="cutoff",
-        )
+    assert list(inspect.signature(build_comorbidity_features).parameters) == [
+        "cohort_df", "evidence_tables", "cci_score", "cutoff_col",
+    ]
 
-def test_accepts_cohort_custom_column_names(cohort_df):
-    cohort = pd.DataFrame(
-        {
-            "subject_id": ["s1", "s2"],
-            "spell": ["A1", "B1"],
-            "cutoff": ["2025-06-01", "2025-06-05"],
-        }
-    )
-    evidence = pd.DataFrame(
-        {
-            "subject_id": ["s1"],
-            "comorbidity": ["renal_disease"],
-            "comorbidity_date": ["2025-01-01"],
-        }
-    )
-
-    result = build_comorbidity_features(
-        cohort_df=cohort,
-        evidence_tables=[evidence],
-        subject_col="subject_id",
-        spell_col="spell",
-        cutoff_col="cutoff",
-    )
-
-    assert isinstance(result, pd.DataFrame)
-    assert "subject_id" in result.columns
-    assert result.loc[0, 'renal_disease'] == 1
 
 def test_raises_if_no_evidence_tables(cohort_df):
     with pytest.raises(
@@ -152,7 +103,7 @@ def test_raises_if_no_evidence_tables(cohort_df):
         build_comorbidity_features(
             cohort_df=cohort_df,
             evidence_tables=[],
-            cutoff_col="discharge_date",
+
         )
 
 def test_raises_if_evidence_table_missing_required_columns(cohort_df):
@@ -225,7 +176,7 @@ def test_comorbidity_features_output_structure(cohort, diagnoses, problems, medi
 def test_comorbidity_empty_cohort_df_output_structure(diagnoses, problems, medications):
 
     cohort = pd.DataFrame(columns=["subject", "spell_identifier", "discharge_date"])
-    
+
     result = build_comorbidity_features(
         cohort_df=cohort,
         evidence_tables=[diagnoses, problems, medications],
@@ -333,14 +284,14 @@ def test_multiple_spells_per_subject_use_own_cutoff_dates():
 
 def test_spells_without_evidence_get_zero_rows():
     cohort = pd.DataFrame(
-        {"subject": ["s1", "s2"], "spell_identifier": ["A1", "B1"], "admission_date": ["2025-02-01"] * 2}
+        {"subject": ["s1", "s2"], "spell_identifier": ["A1", "B1"], "discharge_date": ["2025-02-01"] * 2}
     )
     evidence = pd.DataFrame(
         {"subject": ["s1"], "comorbidity": ["myocardial_infarction"], "comorbidity_date": ["2025-01-01"]}
     )
 
     features = build_comorbidity_features(
-        cohort, evidence_tables=[evidence], cutoff_col="admission_date"
+        cohort, evidence_tables=[evidence]
     )
 
     assert len(features) == 2
@@ -357,7 +308,32 @@ def test_metastatic_tumour_outweighs_malignancy(one_spell_cohort):
         }
     )
     features = build_comorbidity_features(
-        one_spell_cohort, evidence_tables=[evidence], cutoff_col="admission_date", cci_score=True
+        one_spell_cohort, evidence_tables=[evidence], cci_score=True
     )
 
     assert features.loc[0, "cci_score"] == 6
+
+
+@pytest.mark.parametrize("cutoff_col", ["admission_date", "discharge_date", "index_date"])
+def test_selected_cutoff_excludes_equal_and_later_evidence(cutoff_col):
+    cohort = pd.DataFrame({"subject": ["s1"], "spell_identifier": ["A1"], cutoff_col: ["2025-01-02"]})
+    evidence = pd.DataFrame({
+        "subject": ["s1"] * 3,
+        "comorbidity": ["dementia", "renal_disease", "aids_hiv"],
+        "comorbidity_date": ["2025-01-01", "2025-01-02", "2025-01-03"],
+    })
+    result = build_comorbidity_features(cohort, [evidence], cutoff_col=cutoff_col)
+    assert result.loc[0, "dementia"] == 1
+    assert result.loc[0, "renal_disease"] == 0
+    assert result.loc[0, "aids_hiv"] == 0
+
+
+def test_missing_selected_cutoff(cohort_df, diagnoses):
+    with pytest.raises(ValueError, match="missing required columns.*index_date"):
+        build_comorbidity_features(cohort_df, [diagnoses], cutoff_col="index_date")
+
+
+def test_invalid_selected_cutoff(cohort_df, diagnoses):
+    cohort = cohort_df.assign(admission_date=None)
+    with pytest.raises(ValueError, match="missing or invalid values in 'admission_date'"):
+        build_comorbidity_features(cohort, [diagnoses], cutoff_col="admission_date")

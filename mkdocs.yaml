@@ -1,4 +1,4 @@
-site_name: comorb-icare Documentation
+site_name: comorbidicare Documentation
 site_description: Documentation and guides for deriving comorbidity features from iCARE data
 site_url: https://Anisiat.github.io/comorb_package/
 
@@ -32,6 +32,7 @@ nav:
   - Feature Pipeline: 04-feature-pipeline.md
   - API Reference:
       - Overview: api/index.md
+      - Input Schema and Pipeline: api/schema.md
       - Cleaning: api/cleaning.md
       - Mapping: api/mapping.md
       - Features: api/features.md

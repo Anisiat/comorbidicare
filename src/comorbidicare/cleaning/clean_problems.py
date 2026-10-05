@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ._utils import _clean_optional_string
+from ._utils import _clean_identifier, _clean_optional_string, _parse_dates, _clean_snomed_codes
 
 REQUIRED_COLUMNS = frozenset(
     {
@@ -54,21 +54,18 @@ def clean_problems(problems_df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"Missing required problem columns: {missing_columns}")
 
     # Require a usable subject identifier.
-    df["subject"] = _clean_optional_string(df["subject"])
+    df["subject"] = _clean_identifier(df["subject"])
     if df["subject"].isna().any():
         raise ValueError("Problem records contain missing subject identifiers.")
 
     # Preserve codes as text and clean optional descriptions.
-    df["problem_code"] = _clean_optional_string(df["problem_code"])
+    df["problem_code"] = _clean_snomed_codes(df["problem_code"])
 
     if "problem_desc" in df.columns:
         df["problem_desc"] = _clean_optional_string(df["problem_desc"])
 
     # Coerce invalid dates to NaT.
-    df["problem_dt_tm"] = pd.to_datetime(
-        df["problem_dt_tm"],
-        errors="coerce",
-    )
+    df["problem_dt_tm"] = _parse_dates(df["problem_dt_tm"])
 
     # Keep records with a code
     df = df.dropna(subset=["problem_code"], how="all")

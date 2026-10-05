@@ -12,12 +12,9 @@ code directly from the package's Python docstrings using mkdocstrings.
 Import functions from the modules shown on each page. The package root does not
 currently re-export these functions.
 
-!!! warning "High-level pipeline is not yet usable"
-
-    `comorbidicare.pipeline.build_comorbidity_table` currently references an undefined
-    `subject_col` and does not supply the required mapping arguments.
-    Use the cleaning, mapping, and feature functions documented
-    here until those implementation issues are resolved.
+Use `comorbidicare.pipeline.build_comorbidity_table` to run all stages on raw
+iCARE tables. See [Input schema and pipeline](schema.md) for optional column-name
+overrides and migration from the removed column-name arguments.
 
 ## Updating this reference
 

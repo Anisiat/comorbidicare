@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ._utils import _clean_optional_string
+from ._utils import _clean_identifier, _clean_optional_string, _parse_dates, _clean_snomed_codes
 
 
 REQUIRED_COLUMNS = frozenset({"subject"})
@@ -93,7 +93,7 @@ def clean_diagnoses(
         )
 
     # Require a usable subject identifier.
-    df["subject"] = _clean_optional_string(df["subject"])
+    df["subject"] = _clean_identifier(df["subject"])
     if df["subject"].isna().any():
         raise ValueError("Diagnosis records contain missing subject identifiers.")
 
@@ -103,10 +103,15 @@ def clean_diagnoses(
         "diagnosis_code_snomed",
         "diagnosis_desc_icd",
         "diagnosis_desc_snomed",
-        "spell_identifier",
     ):
         if column in df.columns:
             df[column] = _clean_optional_string(df[column])
+
+    if "spell_identifier" in df.columns:
+        df["spell_identifier"] = _clean_identifier(df["spell_identifier"])
+
+    if "diagnosis_code_snomed" in df.columns:
+        df["diagnosis_code_snomed"] = _clean_snomed_codes(df["diagnosis_code_snomed"])
 
     # Keep ICD codes uppercase and remove dots.
     if "diagnosis_code_icd" in df.columns:
@@ -116,10 +121,7 @@ def clean_diagnoses(
 
     # Coerce invalid or absent diagnosis dates to NaT.
     if "diagnosis_date" in df.columns:
-        df["diagnosis_date"] = pd.to_datetime(
-            df["diagnosis_date"],
-            errors="coerce",
-        )
+        df["diagnosis_date"] = _parse_dates(df["diagnosis_date"])
     else:
         df["diagnosis_date"] = pd.NaT
 
@@ -158,18 +160,15 @@ def clean_diagnoses(
                 "spell_admission_dates_df is provided."
             )
 
-        spell_dates["spell_identifier"] = _clean_optional_string(spell_dates["spell_identifier"])
-        df['spell_identifier'] = _clean_optional_string(df['spell_identifier'])
-        spell_dates["subject"] = _clean_optional_string(spell_dates["subject"])
+        spell_dates["spell_identifier"] = _clean_identifier(spell_dates["spell_identifier"])
+        df['spell_identifier'] = _clean_identifier(df['spell_identifier'])
+        spell_dates["subject"] = _clean_identifier(spell_dates["subject"])
 
         # Prevent missing spell identifiers from matching.
         spell_dates = spell_dates.dropna(subset=['subject',"spell_identifier"])
 
         # Coerce invalid admission dates to NaT.
-        spell_dates["admission_date"] = pd.to_datetime(
-            spell_dates["admission_date"],
-            errors="coerce",
-        )
+        spell_dates["admission_date"] = _parse_dates(spell_dates["admission_date"])
 
         # Remove any duplicate records for the same spell IDs.
         spell_dates = spell_dates.drop_duplicates(

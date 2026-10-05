@@ -1,4 +1,4 @@
-`comorb-icare` is a Python package for deriving Charlson Comorbidity Index (CCI) features from routinely collected iCARE clinical data.
+`comorbidicare` is a Python package for deriving Charlson Comorbidity Index (CCI) features from routinely collected iCARE clinical data.
 
 ## Overview
 
@@ -21,7 +21,7 @@ The package is intended to support both:
 - lower-level use, where users clean, map, reconcile, or score data step-by-step
 - higher-level use, where users provide one or more iCARE tables and receive derived comorbidities and CCI scores directly
 
-IMPORTANT: works using exact iCARE column names.
+Standard iCARE column names work by default. For renamed input columns, supply optional `column_map` overrides to `build_comorbidity_table()`.
 
 
 ## Intended use

@@ -1,6 +1,7 @@
 import pandas as pd
 
 from ._loaders import load_mapping
+from ..cleaning._utils import _parse_dates, _clean_snomed_codes
 
 
 
@@ -16,6 +17,7 @@ def _get_icd_prefixes(mapping_df):
         ].itertuples(index=False, name=None)
 
         if pd.notna(code) and pd.notna(comorbidity)
+        and str(code).strip().replace(".", "")
     ]
 
 def _match_icd_code(value, icd_prefixes):
@@ -133,10 +135,7 @@ def map_codes_to_comorbidities(
         df["comorbidity_code_source"] = code_type
 
     # Rename and standardize the date column.
-    df["comorbidity_date"] = pd.to_datetime(
-        df[date_col],
-        errors="coerce",
-    )
+    df["comorbidity_date"] = _parse_dates(df[date_col])
 
     # Load the default mapping if no mapping DataFrame is provided
     if mapping_df is None:
@@ -169,8 +168,10 @@ def map_codes_to_comorbidities(
         )
 
     elif code_type == "snomed":
+        mapping_df = mapping_df.copy()
+        mapping_df["snomed_code"] = _clean_snomed_codes(mapping_df["snomed_code"])
         snomed_lookup = _get_exact_lookup(mapping_df, "snomed_code")
-        df["comorbidity"] = df[code_col].map(
+        df["comorbidity"] = _clean_snomed_codes(df[code_col]).map(
             lambda x: _match_exact(x, snomed_lookup)
         )
 

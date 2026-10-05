@@ -1,6 +1,6 @@
-# comorb-icare
+# comorbidicare
 
-`comorb-icare` is a Python package for deriving Charlson Comorbidity Index (CCI) features from routinely collected iCARE clinical data.
+`comorbidicare` is a Python package for deriving Charlson Comorbidity Index (CCI) features from routinely collected iCARE clinical data.
 
 ## Overview
 
@@ -23,8 +23,53 @@ The package is intended to support both:
 - lower-level use, where users clean, map, reconcile, or score data step-by-step
 - higher-level use, where users provide one or more iCARE tables and receive derived comorbidities and CCI scores directly
 
-IMPORTANT: works using exact iCARE column names.
+Standard iCARE column names work by default. For renamed input columns, supply optional `column_map` overrides to `build_comorbidity_table()`.
 
+
+## Input column names
+
+```python
+from comorbidicare.pipeline import build_comorbidity_table
+
+# Raw tables with default iCARE column names; any one evidence source is enough.
+features = build_comorbidity_table(
+    cohort_df=cohort,
+    diagnoses_df=diagnoses,
+    prescriptions_df=prescriptions,
+    problems_df=problems,
+    cci_score=True,
+)
+
+# Only these columns have different names; all other defaults still apply.
+features = build_comorbidity_table(
+    cohort_df=cohort.rename(columns={"subject": "patient_id"}),
+    diagnoses_df=diagnoses.rename(columns={"diagnosis_code_icd": "icd10"}),
+    column_map={
+        "cohort": {"subject": "patient_id"},
+        "diagnoses": {"diagnosis_code_icd": "icd10"},
+    },
+)
+```
+
+Mappings use **canonical name → input column name**, separately for `cohort`,
+`diagnoses`, `prescriptions`, and `problems`. Unspecified fields retain their
+defaults. Column names are stripped and lowercased, preserving existing iCARE
+normalisation; no column names are guessed. Inputs are copied, and outputs use
+canonical names when using `column_map` alone.
+
+See [the input schema reference](docs/api/schema.md) for supported columns,
+validation rules, and migration from the removed `*_col` arguments.
+
+**Breaking change:** column-name configuration now uses only `column_map`.
+The pipeline no longer accepts `subject_col`, `spell_col`, `admission_date_col`,
+or `cutoff_col`; outputs always use canonical names. Feature building also
+requires canonical names for patient, spell, comorbidity and evidence date.
+Its `cutoff_col` argument selects the cohort date used for filtering.
+
+The pipeline defaults to `cutoff="discharge"`. Use `cutoff="admission"` to
+include only evidence strictly before admission instead. The switch selects
+canonical dates after `column_map` is applied; evidence exactly at the cutoff
+is excluded. Both cohort date columns are still required.
 
 ## Intended use
 
@@ -105,48 +150,7 @@ In particular:
 
 ## Development roadmap
 
-Planned functionality includes:
+Remaining work includes:
 
-- cleaning and standardisation functions for each source table
-- mapping functions for ICD-10, SNOMED CT, and medication evidence
-- reconciliation of overlapping and hierarchical comorbidity evidence
-- standard weighted CCI scoring
 - optional age-adjusted CCI scoring where age is provided
-- a high-level function that performs the full pipeline automatically
-- support for using one, two, or all three iCARE source tables
-- retention of evidence provenance for validation and auditability
-- double check ICD behaviour - 
-
-This:
-
-return list(dict.fromkeys(
-    comorbidity
-    for prefix, comorbidity in icd_prefixes
-    if observed_code.startswith(prefix)
-))
-
-means all matching prefixes are retained.
-
-For example, suppose your mapping contains:
-
-[
-    ("I10", "condition_A"),
-    ("I109", "condition_B"),
-]
-
-and the observed code is:
-
-"I109"
-
-Both match:
-
-"I109".startswith("I10")   # True
-"I109".startswith("I109")  # True
-
-so you'd get:
-
-["condition_A", "condition_B"]
-
-That may be exactly what you want, depending on your mapping. Just make sure it is intentional.
-
-For CCI-style mappings, overlapping prefixes can matter, so I'd check your mapping table for this before deciding whether "all matches" or "most specific match" is the desired behaviour.
+- reviewing overlapping ICD-10 prefixes in the mapping table to confirm whether retaining all matching comorbidities, rather than only the most specific match, is intentional

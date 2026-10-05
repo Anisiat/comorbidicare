@@ -3,6 +3,9 @@
 Combine mapped evidence into one row per subject and spell. Evidence must be
 strictly earlier than the cutoff: records dated exactly at the cutoff are
 excluded. Spells without qualifying evidence receive zero-valued indicators.
+Use `cutoff_col="admission_date"` to filter at admission, or keep the default
+`cutoff_col="discharge_date"` for discharge. The pipeline exposes the same choice
+as `cutoff="admission"` or `cutoff="discharge"`.
 
 ## Example
 
@@ -19,7 +22,7 @@ from comorbidicare.features import build_comorbidity_features
 cohort = pd.DataFrame({
     "subject": ["example-1"],
     "spell_identifier": ["spell-1"],
-    "admission_date": ["2025-02-01"],
+    "discharge_date": ["2025-02-01"],
 })
 diagnoses = pd.DataFrame({
     "subject": ["example-1"],
@@ -43,7 +46,7 @@ evidence = map_codes_to_comorbidities(
 features = build_comorbidity_features(
     cohort,
     evidence_tables=[evidence],
-    cutoff_col="admission_date",
+
     cci_score=True,
 )
 # myocardial_infarction = 1; cci_score = 1

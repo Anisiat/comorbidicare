@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ._utils import _clean_optional_string
+from ._utils import _clean_identifier, _clean_optional_string, _parse_dates
 
 
 REQUIRED_COLUMNS = frozenset(
@@ -58,7 +58,7 @@ def clean_prescriptions(prescriptions_df: pd.DataFrame) -> pd.DataFrame:
         )
 
     # Require a usable subject identifier.
-    df["subject"] = _clean_optional_string(df["subject"])
+    df["subject"] = _clean_identifier(df["subject"])
     if df["subject"].isna().any():
         raise ValueError("Prescription records contain missing subject identifiers.")
 
@@ -67,10 +67,7 @@ def clean_prescriptions(prescriptions_df: pd.DataFrame) -> pd.DataFrame:
     df['medication_name_short'] = _clean_optional_string(df['medication_name_short'], lowercase=True)
 
     # Coerce invalid dates to NaT.
-    df["order_dt_tm"] = pd.to_datetime(
-        df["order_dt_tm"],
-        errors="coerce",
-    )
+    df["order_dt_tm"] = _parse_dates(df["order_dt_tm"])
 
     # Keep records with a medication name or class.
     df = df.dropna(
