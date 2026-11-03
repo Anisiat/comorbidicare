@@ -79,7 +79,7 @@ def standardise_columns(
     mapping = DEFAULT_COLUMN_MAP[table] | overrides
     # Work on a copy and preserve the cleaners' existing case/whitespace handling.
     result = df.copy()
-    result.columns = result.columns.astype("string").str.strip().str.lower()
+    result.columns = result.columns.astype(str).str.strip().str.lower()
     # For example, "SUBJECT" and " subject " would become the same column name.
     if result.columns.duplicated().any():
         raise ValueError(f"Duplicate columns in {table} after normalisation.")

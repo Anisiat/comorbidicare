@@ -40,7 +40,7 @@ def clean_problems(problems_df: pd.DataFrame) -> pd.DataFrame:
 
     # Normalise column names on a copy.
     df = problems_df.copy()
-    df.columns = df.columns.astype("string").str.strip().str.lower()
+    df.columns = df.columns.astype(str).str.strip().str.lower()
 
     # Validate the input schema.
     if df.columns.duplicated().any():

@@ -70,7 +70,7 @@ def clean_diagnoses(
 
     # Normalise column names on a copy.
     df = diagnoses_df.copy()
-    df.columns = df.columns.astype("string").str.strip().str.lower()
+    df.columns = df.columns.astype(str).str.strip().str.lower()
 
     # Validate the input schema.
     if df.columns.duplicated().any():
@@ -129,7 +129,7 @@ def clean_diagnoses(
     if spell_admission_dates_df is not None:
         spell_dates = spell_admission_dates_df.copy()
 
-        spell_dates.columns = spell_dates.columns.astype("string").str.strip().str.lower()
+        spell_dates.columns = spell_dates.columns.astype(str).str.strip().str.lower()
 
         if spell_dates.columns.duplicated().any():
             duplicates = sorted(
