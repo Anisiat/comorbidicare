@@ -17,7 +17,9 @@ def one_spell_cohort():
 
 
 @pytest.fixture
-def cohort():
+def discharge_only_cohort():
+    """Minimal cohort with no admission_date, for testing build_comorbidity_features
+    in isolation (unlike cohort_df, which has every canonical field for full-pipeline tests)."""
     return pd.DataFrame(
         {
             "subject": ["s1", "s2"],
@@ -142,9 +144,9 @@ def test_invalid_cutoff_date_in_cohort(cohort_df):
             evidence_tables=[evidence],
         )
 
-def test_no_comorbidities_after_cutoff(cohort, diagnoses, problems, medications):
+def test_no_comorbidities_after_cutoff(discharge_only_cohort, diagnoses, problems, medications):
 
-    cohort = cohort.copy()
+    cohort = discharge_only_cohort.copy()
     diagnoses = diagnoses.copy()
     problems = problems.copy()
     medications = medications.copy()
@@ -161,10 +163,10 @@ def test_no_comorbidities_after_cutoff(cohort, diagnoses, problems, medications)
     assert result.loc[0, list(CCI_WEIGHTS)].sum() == 0  # No comorbidities for subject s1 after cutoff
 
 
-def test_comorbidity_features_output_structure(cohort, diagnoses, problems, medications):
+def test_comorbidity_features_output_structure(discharge_only_cohort, diagnoses, problems, medications):
 
     result = build_comorbidity_features(
-        cohort_df=cohort,
+        cohort_df=discharge_only_cohort,
         evidence_tables=[diagnoses, problems, medications],
     )
 
@@ -185,10 +187,10 @@ def test_comorbidity_empty_cohort_df_output_structure(diagnoses, problems, medic
     assert list(result.columns) == expected_columns
 
 
-def test_cci_score_calculation(cohort, diagnoses, problems, medications):
+def test_cci_score_calculation(discharge_only_cohort, diagnoses, problems, medications):
 
     result = build_comorbidity_features(
-        cohort_df=cohort,
+        cohort_df=discharge_only_cohort,
         evidence_tables=[diagnoses, problems, medications],
         cci_score = True
     )
@@ -198,10 +200,10 @@ def test_cci_score_calculation(cohort, diagnoses, problems, medications):
 
     assert result.loc[result["subject"] == "s2", "cci_score"].values[0] == expected_cci_score_s2
 
-def test_no_cci_score_when_flag_false(cohort, diagnoses, problems, medications):
+def test_no_cci_score_when_flag_false(discharge_only_cohort, diagnoses, problems, medications):
 
     result = build_comorbidity_features(
-        cohort_df=cohort,
+        cohort_df=discharge_only_cohort,
         evidence_tables=[diagnoses, problems, medications],
         cci_score = False
     )

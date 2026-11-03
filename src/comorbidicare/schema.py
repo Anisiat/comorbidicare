@@ -16,7 +16,7 @@ DEFAULT_COLUMN_MAP = {
     )},
     "diagnoses": {name: name for name in (
         "subject", "spell_identifier", "diagnosis_code_icd", "diagnosis_code_snomed",
-        "diagnosis_date", "diagnosis_desc_icd", "diagnosis_desc_snomed", "admission_date",
+        "diagnosis_date", "diagnosis_desc_icd", "diagnosis_desc_snomed",
     )},
     "prescriptions": {name: name for name in ( 
         "subject", "medication_name_short", "order_dt_tm",

@@ -155,3 +155,92 @@ def test_cutoff_switch_with_renamed_dates(cohort_df, cutoff, expected):
 def test_invalid_cutoff_rejected(cohort_df, raw_problems_df):
     with pytest.raises(ValueError, match="cutoff must be"):
         build_comorbidity_table(cohort_df, problems_df=raw_problems_df, cutoff="other")
+
+
+def test_admission_fallback_uses_each_spells_own_admission_date():
+    cohort = pd.DataFrame({
+        "subject": ["s1", "s1"],
+        "spell_identifier": ["A1", "A2"],
+        "admission_date": ["2025-01-01", "2025-06-01"],
+        "discharge_date": ["2025-01-10", "2025-06-10"],
+    })
+    diagnoses = pd.DataFrame({
+        "subject": ["s1", "s1"],
+        "spell_identifier": ["A1", "A2"],
+        "diagnosis_code_icd": ["I21", "I21"],
+        "diagnosis_date": [None, None],
+    })
+    result = build_comorbidity_table(cohort, diagnoses_df=diagnoses).set_index("spell_identifier")
+    assert result.loc["A1", "myocardial_infarction"] == 1
+    assert result.loc["A2", "myocardial_infarction"] == 1
+
+
+def test_pipeline_admission_fallback_overrides_diagnoses_own_admission_date():
+    cohort = pd.DataFrame({
+        "subject": ["s1"],
+        "spell_identifier": ["A1"],
+        "admission_date": ["2025-01-01"],
+        "discharge_date": ["2025-01-10"],
+    })
+    diagnoses = pd.DataFrame({
+        "subject": ["s1"],
+        "spell_identifier": ["A1"],
+        "diagnosis_code_icd": ["I21"],
+        "diagnosis_date": [None],
+        "admission_date": ["1999-01-01"],  # stale value on the diagnoses table itself
+    })
+    result = build_comorbidity_table(cohort, diagnoses_df=diagnoses, cutoff="admission")
+    # The cohort's admission date (2025-01-01) is used and falls exactly on the
+    # cutoff, so it's excluded. If the diagnoses table's own stale 1999 date
+    # had been used instead, it would have been well before the cutoff and counted.
+    assert result.loc[0, "myocardial_infarction"] == 0
+
+
+def test_admission_cutoff_excludes_fallback_evidence_on_admission_date():
+    cohort = pd.DataFrame({
+        "subject": ["s1"],
+        "spell_identifier": ["A1"],
+        "admission_date": ["2025-01-01"],
+        "discharge_date": ["2025-01-10"],
+    })
+    diagnoses = pd.DataFrame({
+        "subject": ["s1"],
+        "spell_identifier": ["A1"],
+        "diagnosis_code_icd": ["I21"],
+        "diagnosis_date": [None],
+    })
+    admission_result = build_comorbidity_table(cohort, diagnoses_df=diagnoses, cutoff="admission")
+    discharge_result = build_comorbidity_table(cohort, diagnoses_df=diagnoses, cutoff="discharge")
+    assert admission_result.loc[0, "myocardial_infarction"] == 0
+    assert discharge_result.loc[0, "myocardial_infarction"] == 1
+
+
+def test_missing_spell_identifier_disables_admission_fallback(cohort_df):
+    diagnoses = pd.DataFrame({
+        "subject": ["s1"],
+        "diagnosis_code_icd": ["I21"],
+        "diagnosis_date": [None],
+    })
+    result = build_comorbidity_table(cohort_df, diagnoses_df=diagnoses).set_index("subject")
+    assert result.loc["s1", "myocardial_infarction"] == 0
+
+
+def test_duplicate_diagnoses_of_same_comorbidity_collapse_to_single_flag_per_spell():
+    cohort = pd.DataFrame({
+        "subject": ["s1", "s1"],
+        "spell_identifier": ["A1", "A2"],
+        "admission_date": ["2025-01-01", "2025-06-01"],
+        "discharge_date": ["2025-01-10", "2025-06-10"],
+    })
+    diagnoses = pd.DataFrame({
+        "subject": ["s1", "s1", "s1"],
+        "spell_identifier": ["A1", "A1", "A2"],
+        # Two distinct codes for spell A1 both map to myocardial_infarction.
+        "diagnosis_code_icd": ["I21.0", "I21.1", "I21.9"],
+        "diagnosis_date": ["2024-12-01", "2024-12-15", "2025-05-01"],
+    })
+    result = build_comorbidity_table(cohort, diagnoses_df=diagnoses, cci_score=True).set_index("spell_identifier")
+    assert result.loc["A1", "myocardial_infarction"] == 1
+    assert result.loc["A1", "cci_score"] == 1
+    assert result.loc["A2", "myocardial_infarction"] == 1
+    assert result.loc["A2", "cci_score"] == 1

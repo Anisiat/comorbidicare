@@ -51,7 +51,6 @@ across tables; renaming columns does not translate identifier values.
 | diagnoses | `diagnosis_date` | Recorded diagnosis date | Optional; falls back to admission date |
 | diagnoses | `diagnosis_desc_icd` | ICD diagnosis description | Optional |
 | diagnoses | `diagnosis_desc_snomed` | SNOMED diagnosis description | Optional |
-| diagnoses | `admission_date` | Existing admission date | Optional; replaced by cohort dates |
 | prescriptions | `subject` | Patient identifier | Required |
 | prescriptions | `medication_name_short` | Medication name for lookup | Required |
 | prescriptions | `order_dt_tm` | Medication evidence date | Required |
