@@ -29,6 +29,8 @@ the wheel itself.
       display correctly on PyPI
 - [ ] Create a brand-new environment, install only the wheel, and run a small
       script (outside the repo folder) that runs the pipeline on synthetic data
+- [x] Add `MANIFEST.in` with `graft tests`: the sdist currently includes the
+      `test_*.py` files but not `tests/conftest.py`, so its tests can't run
 
 ## 3. Quick-start docs: can a new user get started?
 
