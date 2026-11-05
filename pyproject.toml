@@ -15,9 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest", 
-    'pytest-cov']
+dev = ["pytest", "pytest-cov", "build", "twine"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
