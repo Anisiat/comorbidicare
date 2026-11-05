@@ -95,7 +95,7 @@ Uploads to PyPI are permanent: a version number can never be reused.
 - [ ] Tidy the repo: untrack `.coverage`; remove the empty `cleaning.md`,
       `features.md` and `api/` at the top level
 - [ ] Confirm the version number (`0.1.0` = first, early release)
-- [ ] Write `CHANGELOG.md` (release notes)
+- [x] Write `CHANGELOG.md` (release notes); set the date on release day
 - [ ] Ask the SDE team how packages reach the SDE: Nexus directly, or Nexus
       mirroring PyPI?
 - [ ] If publishing on PyPI: practise on TestPyPI first, then publish via a

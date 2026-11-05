@@ -8,6 +8,22 @@ version = "0.1.0"
 description = "Utilities for deriving the 17 CCI comorbidities and index from icare tables (diagnoses, problems, prescribing)"
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [{ name = "Anisia Talianu", email = "anisia.talianu@gmail.com" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+]
 
 dependencies = [
     "pandas>=2.3",
