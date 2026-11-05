@@ -84,20 +84,21 @@ package does so they can describe it in their methods.
 **Why:** a release is a fixed, numbered snapshot people can install and cite.
 Uploads to PyPI are permanent: a version number can never be reused.
 
-- [ ] Fill in `pyproject.toml` metadata: authors, license, classifiers,
+- [x] Fill in `pyproject.toml` metadata: authors, license, classifiers,
       project URLs
 - [x] `build` and `twine` added to the `dev` extra
-- [ ] Rebuild after the README changes (the README is copied into the package)
+- [x] Rebuild after the README changes (the README is copied into the package)
 - [ ] On release day, add the PyPI and Python-version badges to the README
       (the Python badge needs the classifiers above)
-- [ ] `__init__.py`: add `__version__` and top-level imports
+- [x] `__init__.py`: add `__version__` and top-level imports
       (`from comorbidicare import build_comorbidity_table`)
-- [ ] Tidy the repo: untrack `.coverage`; remove the empty `cleaning.md`,
+- [x] Tidy the repo: untrack `.coverage`; remove the empty `cleaning.md`,
       `features.md` and `api/` at the top level
-- [ ] Confirm the version number (`0.1.0` = first, early release)
+- [x] Confirm the version number (`0.1.0` = first, early release). TestPyPI
+      uses `0.1.0rc1` (`rc2`, ... after fixes); set `0.1.0` for the real PyPI release
 - [x] Write `CHANGELOG.md` (release notes); set the date on release day
-- [ ] Ask the SDE team how packages reach the SDE: Nexus directly, or Nexus
-      mirroring PyPI?
+- [x] Ask the SDE team how packages reach the SDE: Nexus directly, or Nexus
+      mirroring PyPI? Answer: publish to PyPI, then request each version on Nexus
 - [ ] If publishing on PyPI: practise on TestPyPI first, then publish via a
       GitHub Actions workflow with Trusted Publishing (no API tokens)
 - [ ] Tag the release in git (`v0.1.0`) and create a GitHub Release

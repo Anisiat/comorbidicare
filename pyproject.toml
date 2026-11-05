@@ -1,12 +1,14 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "comorbidicare"
-version = "0.1.0"
-description = "Utilities for deriving the 17 CCI comorbidities and index from icare tables (diagnoses, problems, prescribing)"
+version = "0.1.0rc1"
+description = "Derive the 17 Charlson comorbidities and the Charlson Comorbidity Index (CCI) from iCARE diagnoses, problems and prescribing tables"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [{ name = "Anisia Talianu", email = "anisia.talianu@gmail.com" }]
 classifiers = [
@@ -29,6 +31,12 @@ dependencies = [
     "pandas>=2.3",
     "numpy>=1.23",
 ]
+
+[project.urls]
+Documentation = "https://anisiat.github.io/comorbidicare/"
+Source = "https://github.com/Anisiat/comorbidicare"
+Issues = "https://github.com/Anisiat/comorbidicare/issues"
+Changelog = "https://github.com/Anisiat/comorbidicare/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "build", "twine"]
