@@ -50,7 +50,7 @@ what the code actually does.
       roadmap removed
 - [x] Logo added (`docs/assets/logo.svg`, `logo-dark.svg`, `logo-icon.svg`)
       and shown at the top of the README
-- [ ] Logo: convert the text to outlines (needs the Inter font and fonttools),
+- [x] Logo: text converted to outlines (Poppins, SIL Open Font License),
       so it looks the same on every computer
 - [ ] Docs site: add the logo and favicon in `mkdocs.yaml` (`theme: logo`,
       `favicon`), and fix `site_url` (still the old `comorb_package` address)
