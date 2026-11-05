@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 100" width="460" height="100" role="img" aria-label="comorbidicare">
+  <g fill="none" stroke-width="16" stroke-linecap="round"><path d="M74.46 26.38 A34 34 0 0 0 28.60 23.58" stroke="#C9D9F0"/><path d="M25.13 26.81 A34 34 0 0 0 25.13 73.19" stroke="#8DB4E2"/><path d="M28.60 76.42 A34 34 0 0 0 74.46 73.62" stroke="#4F8FD6"/></g>
+  <path d="M67 41 V59 M58 50 H76" stroke="#C9D9F0" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <text x="110" y="66" textLength="335" lengthAdjust="spacingAndGlyphs" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="46" fill="#E6EEF8">comorbid<tspan font-weight="600" fill="#8DB4E2">icare</tspan></text>
+</svg>

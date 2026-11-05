@@ -90,3 +90,14 @@ Only columns required for comorbidity derivation need to be extracted from Snowf
 Large description fields can be omitted where necessary, since the primary mapping logic uses structured ICD, SNOMED, and medication information.
 
 The package should tolerate partial data availability where possible. For example, diagnosis mapping can proceed using ICD-10 evidence even when SNOMED diagnosis codes are unavailable.
+
+## Why the package tolerates missing fields
+
+In iCARE extracts, diagnosis dates and SNOMED diagnosis codes are often
+missing, while ICD-10 codes, problem-list dates and prescribing dates are
+usually present. The package is therefore designed so that:
+
+- ICD-10 diagnosis evidence remains usable when SNOMED diagnosis codes are missing
+- diagnosis dates are optional; a missing date falls back to the spell's admission date
+- problem-list and prescribing dates provide additional timing information
+- evidence from each source is kept separately before being combined

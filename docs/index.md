@@ -14,11 +14,11 @@ It identifies the 17 Charlson comorbidities using:
 - SNOMED CT codes
 - medication evidence for selected conditions
 
-Evidence from these sources is standardised to a common set of CCI comorbidity labels, reconciled across sources, and can then be used to calculate the Charlson Comorbidity Index.
+Evidence from these sources is standardised to a common set of CCI comorbidity labels and combined across sources: a condition is flagged if any source records it before the cutoff. The flags can then be used to calculate the Charlson Comorbidity Index.
 
 The package is intended to support both:
 
-- lower-level use, where users clean, map, reconcile, or score data step-by-step
+- lower-level use, where users clean, map, or score data step-by-step
 - higher-level use, where users provide one or more iCARE tables and receive derived comorbidities and CCI scores directly
 
 Standard iCARE column names work by default. For renamed input columns, supply optional `column_map` overrides to `build_comorbidity_table()`.
