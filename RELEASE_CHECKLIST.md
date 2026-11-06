@@ -30,7 +30,7 @@ the wheel itself.
 - [x] Create a brand-new environment, install only the wheel, and run a small
       script (outside the repo folder) that runs the pipeline on synthetic data
       (all 3 tables, both cutoffs, liver hierarchy: all as expected)
-- [ ] Repeat this check on the final build just before publishing
+- [x] Repeat this check on the final build just before publishing
 - [x] Add `MANIFEST.in` with `graft tests`: the sdist currently includes the
       `test_*.py` files but not `tests/conftest.py`, so its tests can't run
 
@@ -89,7 +89,7 @@ Uploads to PyPI are permanent: a version number can never be reused.
       project URLs
 - [x] `build` and `twine` added to the `dev` extra
 - [x] Rebuild after the README changes (the README is copied into the package)
-- [ ] On release day, add the PyPI and Python-version badges to the README
+- [x] On release day, add the PyPI and Python-version badges to the README
       (the Python badge needs the classifiers above)
 - [x] `__init__.py`: add `__version__` and top-level imports
       (`from comorbidicare import build_comorbidity_table`)
@@ -102,7 +102,9 @@ Uploads to PyPI are permanent: a version number can never be reused.
       mirroring PyPI? Answer: publish to PyPI, then request each version on Nexus
 - [x] Practise on TestPyPI: `0.1.0rc1` uploaded, installed in a fresh
       environment and checked (2026-11-06)
-- [ ] Publish to PyPI via a GitHub Actions workflow with Trusted Publishing
-      (no API tokens)
-- [ ] Tag the release in git (`v0.1.0`) and create a GitHub Release
+- [x] Publish to PyPI via a GitHub Actions workflow with Trusted Publishing
+      (no API tokens): 0.1.0 published 2026-11-06
+- [ ] Email the SDE team to add 0.1.0 to Nexus; ask whether each new version
+      needs a request
+- [x] Tag the release in git (`v0.1.0`) and create a GitHub Release
 - [ ] Optional: `CITATION.cff` and Zenodo for a citable DOI

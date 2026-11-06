@@ -7,6 +7,8 @@
 
 # comorbidicare: a Python tool for deriving comorbidity information and CCI scores from iCARE data
 
+[![PyPI](https://img.shields.io/pypi/v/comorbidicare)](https://pypi.org/project/comorbidicare/)
+[![Python](https://img.shields.io/pypi/pyversions/comorbidicare)](https://pypi.org/project/comorbidicare/)
 [![Tests](https://github.com/Anisiat/comorbidicare/actions/workflows/tests.yaml/badge.svg)](https://github.com/Anisiat/comorbidicare/actions/workflows/tests.yaml)
 [![Docs](https://github.com/Anisiat/comorbidicare/actions/workflows/docs.yaml/badge.svg)](https://anisiat.github.io/comorbidicare/)
 [![Licence: MIT](https://img.shields.io/github/license/Anisiat/comorbidicare)](https://github.com/Anisiat/comorbidicare/blob/main/LICENSE)
