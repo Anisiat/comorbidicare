@@ -5,7 +5,7 @@ It standardises column names before cleaning, mapping, and feature building.
 Existing iCARE names need no configuration, including uppercase source columns.
 
 ```python
-from comorbidicare.pipeline import build_comorbidity_table
+from comorbidicare import build_comorbidity_table
 
 features = build_comorbidity_table(
     cohort_df=cohort,

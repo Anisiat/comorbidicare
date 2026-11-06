@@ -74,19 +74,13 @@ Requires Python 3.10 or later and pandas 2.3 or later (pandas 3 is supported).
 pip install comorbidicare
 ```
 
-Until the first release is on PyPI, install it from GitHub instead:
-
-```bash
-pip install git+https://github.com/Anisiat/comorbidicare.git
-```
-
 ## Quick start
 
 Copy and run this example. It uses made-up data, with all three evidence tables.
 
 ```python
 import pandas as pd
-from comorbidicare.pipeline import build_comorbidity_table
+from comorbidicare import build_comorbidity_table
 
 # One admission (spell) to score
 cohort = pd.DataFrame({

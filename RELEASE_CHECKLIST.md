@@ -68,14 +68,15 @@ package does so they can describe it in their methods.
 
 - [x] Document ICD prefix matching in the README: codes match by prefix and
       *all* matching conditions are kept
-- [ ] Add a test that the bundled ICD prefixes never overlap
+- [x] Add a test that the bundled ICD prefixes never overlap across
+      conditions (`tests/test_mapping.py`)
 - [x] Explain the cutoff clearly, with the trade-off for each option (README)
-- [ ] Decide whether the default should stay `"discharge"`
+- [x] Decide whether the default should stay `"discharge"`: yes, keep it
 - [x] SNOMED mapping checked against Fortin et al. Additional File 1
       (corrected version, May 2023): matches, including the liver codes.
       The 29 long codes that differ are rounded in the Word file; the repo has
       the full codes
-- [ ] Write `src/comorbidicare/data/README.md`: sources and versions of each
+- [x] Write `src/comorbidicare/data/README.md`: sources and versions of each
       mapping file, and the 2 SNOMED codes removed with reasons (`372087000`
       from metastatic solid tumour, `713571008` from dementia)
 
@@ -99,7 +100,9 @@ Uploads to PyPI are permanent: a version number can never be reused.
 - [x] Write `CHANGELOG.md` (release notes); set the date on release day
 - [x] Ask the SDE team how packages reach the SDE: Nexus directly, or Nexus
       mirroring PyPI? Answer: publish to PyPI, then request each version on Nexus
-- [ ] If publishing on PyPI: practise on TestPyPI first, then publish via a
-      GitHub Actions workflow with Trusted Publishing (no API tokens)
+- [x] Practise on TestPyPI: `0.1.0rc1` uploaded, installed in a fresh
+      environment and checked (2026-11-06)
+- [ ] Publish to PyPI via a GitHub Actions workflow with Trusted Publishing
+      (no API tokens)
 - [ ] Tag the release in git (`v0.1.0`) and create a GitHub Release
 - [ ] Optional: `CITATION.cff` and Zenodo for a citable DOI

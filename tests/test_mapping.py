@@ -261,3 +261,38 @@ def test_unknown_code_type_raises():
 
     with pytest.raises(ValueError, match="code_type must be one of"):
         map_codes_to_comorbidities(df, code_col="code", code_type="readv2", date_col="d")
+
+
+def _cross_condition_overlaps(icd_prefixes):
+    """Return pairs where one ICD prefix starts another for a different condition.
+
+    Such a pair would make one patient code match two conditions at once.
+    Overlaps within the same condition are harmless (the flag is 1 either
+    way), so they are not reported.
+    """
+    return [
+        (short, short_condition, long, long_condition)
+        for short, short_condition in icd_prefixes
+        for long, long_condition in icd_prefixes
+        if short_condition != long_condition and long.startswith(short)
+    ]
+
+
+def test_overlap_check_catches_a_cross_condition_overlap():
+    # Check the checker: I25 (made-up condition) would also match I252.
+    fake_mapping = pd.DataFrame({
+        "comorbidity": ["myocardial_infarction", "made_up_condition", "dementia"],
+        "icd_code": ["I252", "I25", "F00"],
+    })
+
+    overlaps = _cross_condition_overlaps(_get_icd_prefixes(fake_mapping))
+
+    assert overlaps == [("I25", "made_up_condition", "I252", "myocardial_infarction")]
+
+
+def test_bundled_icd_prefixes_do_not_overlap_across_conditions():
+    # Guards against a future edit to the ICD CSV that would make one code
+    # count towards two conditions.
+    overlaps = _cross_condition_overlaps(_get_icd_prefixes(load_mapping("icd")))
+
+    assert overlaps == [], f"ICD prefixes overlap across conditions: {overlaps}"
