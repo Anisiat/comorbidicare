@@ -3,7 +3,7 @@
 All notable changes to comorbidicare are listed here, newest first.
 Versions follow [semantic versioning](https://semver.org/).
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-11-06)
 
 First release.
 
