@@ -5,16 +5,19 @@ code directly from the package's Python docstrings using mkdocstrings.
 
 | Stage | Reference | Purpose |
 | --- | --- | --- |
-| 1 | [Cleaning](cleaning.md) | Standardise raw diagnoses, problem-list, and prescription tables. |
-| 2 | [Mapping](mapping.md) | Load lookup tables and convert codes into dated comorbidity evidence. |
-| 3 | [Features](features.md) | Build spell-level indicators and optionally calculate CCI scores. |
+| All | [Input schema and pipeline](schema.md) | Run every stage in one call. |
+| 1 | [Input schema and pipeline](schema.md#comorbidicare.schema.standardise_columns) | Rename input columns to canonical names. |
+| 2 | [Cleaning](cleaning.md) | Clean raw diagnoses, problem-list, and prescription tables. |
+| 3 | [Mapping](mapping.md) | Load lookup tables and convert codes into dated comorbidity evidence. |
+| 4 | [Features](features.md) | Build spell-level indicators and optionally calculate CCI scores. |
 
 Import functions from the modules shown on each page. The package root does not
 currently re-export these functions.
 
-Use `comorbidicare.pipeline.build_comorbidity_table` to run all stages on raw
-iCARE tables. See [Input schema and pipeline](schema.md) for optional column-name
-overrides and migration from the removed column-name arguments.
+To run all stages on raw iCARE tables, use `build_comorbidity_table`, which is
+imported from the package itself (`from comorbidicare import
+build_comorbidity_table`). See [Input schema and pipeline](schema.md) for the
+columns it reads.
 
 ## Updating this reference
 

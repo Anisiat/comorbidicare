@@ -254,7 +254,7 @@ dated 3 March 2024 was recorded during the stay: it is counted with
 - **Scoring** uses the standard Charlson weights above, with no age adjustment.
 
 The mapping files are in `src/comorbidicare/data/`. See the
-[mapping methodology](https://anisiat.github.io/comorbidicare/01-CCI-mapping-methodology/)
+[mapping methodology](https://anisiat.github.io/comorbidicare/explanation/methodology/)
 for sources and reasoning. If you are a clinician and would like to help review
 the medication mappings, please get in touch.
 
@@ -262,7 +262,7 @@ the medication mappings, please get in touch.
 
 Full documentation is at <https://anisiat.github.io/comorbidicare/>, including
 the [input schema](https://anisiat.github.io/comorbidicare/api/schema/) and the
-[mapping methodology](https://anisiat.github.io/comorbidicare/01-CCI-mapping-methodology/).
+[mapping methodology](https://anisiat.github.io/comorbidicare/explanation/methodology/).
 
 ## Getting help and contributing
 

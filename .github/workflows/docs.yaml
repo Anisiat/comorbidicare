@@ -35,8 +35,8 @@ jobs:
 
       - name: Install package and documentation dependencies
         run: |
-          pip install -e .
-          pip install zensical==0.0.74 mkdocstrings-python
+          # Zensical is pinned exactly here: it is pre-1.0 and changes often.
+          pip install -e ".[docs]" "zensical==0.0.74"
 
       - name: Build documentation
         run: zensical build --clean --config-file mkdocs.yaml

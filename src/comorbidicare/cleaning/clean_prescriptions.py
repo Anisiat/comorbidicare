@@ -16,8 +16,8 @@ def clean_prescriptions(prescriptions_df: pd.DataFrame) -> pd.DataFrame:
     """Clean longitudinal prescribing records for feature engineering.
 
     Medication records remain supporting evidence and are not converted into
-    Charlson conditions here. Temporal filtering and medicine-to-condition
-    mapping belong in the downstream feature-building step.
+    Charlson conditions here: medicine-to-condition mapping happens in the
+    mapping step, and filtering by date in the feature-building step.
 
     Parameters
     ----------

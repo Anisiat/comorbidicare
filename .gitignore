@@ -8,3 +8,6 @@ dist/
 archived/
 site/
 .coverage
+
+# Claude app preview settings
+.claude/

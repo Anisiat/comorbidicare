@@ -60,13 +60,34 @@ def standardise_columns(
 ) -> pd.DataFrame:
     """Copy, rename and validate one raw table using partial overrides.
 
-    ``column_map`` is keyed by table, then canonical name -> input name.
-    Names are stripped and lowercased, as in the existing iCARE cleaners;
-    Extra columns are retained. Explicitly mapped inputs must exist, 
-    including optional fields when explicitly configured.
+    Column names are stripped and lowercased, then renamed to canonical names
+    using ``column_map``. Columns not in the map are kept unchanged.
 
-    Diagnoses require either coding system; dates and descriptions are optional.
-    The pipeline uses diagnosis spell IDs for admission fallback when present.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Raw input table. It is not modified.
+    table : {"cohort", "diagnoses", "prescriptions", "problems"}
+        Which input table ``df`` is. Selects the canonical names and the
+        required columns.
+    column_map : dict, optional
+        Keyed by table, then canonical name -> input column name, e.g.
+        ``{"cohort": {"subject": "patient_id"}}``. Only columns that differ
+        from the canonical names need to be listed. Overrides for other
+        tables are ignored.
+
+    Returns
+    -------
+    pd.DataFrame
+        Copy of ``df`` with canonical column names.
+
+    Raises
+    ------
+    ValueError
+        If ``table`` or a name in ``column_map`` is unknown, a mapped input
+        column is missing (even for an optional field), two columns end up
+        with the same name, or a required column is missing. Diagnoses need
+        at least one of ``diagnosis_code_icd`` or ``diagnosis_code_snomed``.
     """
     if table not in DEFAULT_COLUMN_MAP:
         raise ValueError(f"Unknown table {table!r}; expected one of {list(DEFAULT_COLUMN_MAP)}.")

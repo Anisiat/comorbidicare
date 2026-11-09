@@ -1,11 +1,13 @@
 site_name: comorbidicare Documentation
 site_description: Documentation and guides for deriving comorbidity features from iCARE data
-site_url: https://Anisiat.github.io/comorb_package/
+site_url: https://anisiat.github.io/comorbidicare/
 
 dev_addr: '0.0.0.0:8000'
 
 theme:
   name: material
+  logo: assets/logo-icon.svg
+  favicon: assets/logo-icon.svg
   palette:
     - scheme: default
       primary: indigo
@@ -25,20 +27,31 @@ theme:
 
 nav:
   - Home: index.md
-  - Getting Started: 00-getting-started.md
-  - CCI Mapping Methodology: 01-CCI-mapping-methodology.md
-  - iCARE Source Tables: 02-icare-source-tables-extraction.md
-  - Module Information: 03-module-information.md
-  - Feature Pipeline: 04-feature-pipeline.md
-  - API Reference:
+  - Get started: getting-started.md
+  - Guides:
+      - Prepare iCARE tables: how-to/prepare-icare-tables.md
+      - Rename columns: how-to/rename-columns.md
+      - Run the steps separately: how-to/run-steps-separately.md
+  - Background:
+      - Mapping methodology: explanation/methodology.md
+      - Pipeline and cutoff: explanation/pipeline-and-cutoff.md
+  - Reference:
       - Overview: api/index.md
-      - Input Schema and Pipeline: api/schema.md
+      - Input schema and pipeline: api/schema.md
       - Cleaning: api/cleaning.md
       - Mapping: api/mapping.md
       - Features: api/features.md
 
 plugins:
   - search
+  # Old page addresses still work, e.g. links in the 0.1.0 README on PyPI.
+  - redirects:
+      redirect_maps:
+        00-getting-started.md: getting-started.md
+        01-CCI-mapping-methodology.md: explanation/methodology.md
+        02-icare-source-tables-extraction.md: how-to/prepare-icare-tables.md
+        03-module-information.md: explanation/pipeline-and-cutoff.md
+        04-feature-pipeline.md: explanation/pipeline-and-cutoff.md
   - mkdocstrings:
       handlers:
         python:
@@ -51,9 +64,16 @@ plugins:
 
 markdown_extensions:
   - admonition
+  - toc:
+      permalink: true
   - pymdownx.details
   - pymdownx.inlinehilite
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      # Render ```mermaid code blocks as diagrams.
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

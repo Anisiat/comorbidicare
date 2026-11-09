@@ -22,3 +22,40 @@
 .md-typeset h6 code {
     font-size: 0.85em;
 }
+
+/* Home page: the logo shows the name, so hide the duplicate heading
+   (it stays in the page for screen readers and the browser tab title). */
+.md-typeset h1.home-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+/* Wider page so table columns have room and text wraps less (theme default is 61rem). */
+.md-grid {
+    max-width: 72rem;
+}
+
+/* Input schema page: one colour per input table. The colours are
+   see-through (rgba), so they work on both the light and dark backgrounds. */
+.schema-cohort        { --schema-colour: 100, 116, 139; }  /* slate */
+.schema-diagnoses     { --schema-colour: 59, 130, 246; }   /* blue */
+.schema-problems      { --schema-colour: 20, 184, 166; }   /* teal */
+.schema-prescriptions { --schema-colour: 168, 85, 247; }   /* purple */
+
+.md-typeset .schema-table {
+    border-left: 4px solid rgb(var(--schema-colour));
+    padding-left: 0.8rem;
+    margin: 1.5em 0;
+}
+.md-typeset .schema-table h3 {
+    margin-top: 0;
+}
+.md-typeset .schema-table table:not([class]) th {
+    background-color: rgba(var(--schema-colour), 0.18);
+}
+.md-typeset .schema-table table:not([class]) td {
+    background-color: rgba(var(--schema-colour), 0.06);
+}

@@ -39,18 +39,12 @@ def clean_diagnoses(
     Returns
     -------
     pd.DataFrame
-        Cleaned diagnoses table containing the original diagnosis fields (subject, spell_identifier, diagnosis_date, diagnosis_code_icd, diagnosis_code_snomed, diagnosis_desc_icd, diagnosis_desc_snomed) and the following additional fields:
+        Cleaned diagnoses table with the original diagnosis fields plus:
+
         - ``comorbidity_date``: best available date for the diagnosis evidence.
         - ``comorbidity_date_source``: source used to derive ``comorbidity_date``.
-        - ``admission_date``: the date the spell was admitted (if available).
-        plus:
-
-    - ``comorbidity_date``: best available date for the diagnosis evidence.
-    - ``comorbidity_date_source``: source used to derive ``comorbidity_date``.
-
-    If ``spell_admission_dates_df`` is provided, ``admission_date`` is
-    also included and is used as a fallback when ``diagnosis_date`` is
-    unavailable.
+        - ``admission_date``: the spell's admission date, only when
+          ``spell_admission_dates_df`` is provided.
 
     Notes
     -----
@@ -63,9 +57,9 @@ def clean_diagnoses(
     using ``diagnosis_date`` where available and ``admission_date`` as a
     fallback.
 
-    The ``comorbidity_date_source`` column indicates which source was used
+    The ``comorbidity_date_source`` column indicates which source was used.
 
-    Valid comorbidity date is not required and can be returned as NaT if both diagnosis and admission dates are missing.
+    A valid comorbidity date is not required and can be returned as NaT if both diagnosis and admission dates are missing.
     """
 
     # Normalise column names on a copy.

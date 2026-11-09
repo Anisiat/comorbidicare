@@ -39,8 +39,9 @@ the wheel itself.
 **Why:** the README and docs are the first thing users read. They must match
 what the code actually does.
 
-- [ ] `docs/00-getting-started.md` (currently empty): how to install, and one
-      example that runs on made-up data
+- [ ] `docs/getting-started.md`: tutorial written (install, example on
+      made-up data, reading the output, cutoff). Still to do: "Next steps"
+      section (Anisia)
 - [x] README "Outputs": now says one row per subject and spell; the evidence
       table is left out (`return_evidence=True` planned for 0.2.0)
 - [x] README: install line added; all links absolute (they work on PyPI)
@@ -52,12 +53,14 @@ what the code actually does.
       and shown at the top of the README
 - [x] Logo: text converted to outlines (Poppins, SIL Open Font License),
       so it looks the same on every computer
-- [ ] Docs site: add the logo and favicon in `mkdocs.yaml` (`theme: logo`,
-      `favicon`), and fix `site_url` (still the old `comorb_package` address)
-- [ ] `docs/04-feature-pipeline.md` (currently empty): explain the pipeline
-      steps and the cutoff trade-off with an example
-- [ ] Methodology page: remove "age is not contained within the three core
-      iCARE source tables" (not confirmed)
+- [x] Docs site: fix `site_url` (was the old `comorb_package` address)
+- [x] Docs site: logo and favicon added in `mkdocs.yaml`
+- [x] Docs restructured by Diátaxis (Get started / Guides / Background /
+      Reference); old page addresses redirect. New pages: three how-to
+      guides and `explanation/pipeline-and-cutoff.md` (pipeline steps,
+      missing data, cutoff trade-off)
+- [x] Methodology page: age sentence removed; scoring weights, severity
+      rule and the two removed SNOMED pairs added
 - [ ] Check on TestPyPI that the README displays correctly, including the
       table-of-contents links and the logo
 

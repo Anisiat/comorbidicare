@@ -5,7 +5,8 @@ strictly earlier than the cutoff: records dated exactly at the cutoff are
 excluded. Spells without qualifying evidence receive zero-valued indicators.
 Use `cutoff_col="admission_date"` to filter at admission, or keep the default
 `cutoff_col="discharge_date"` for discharge. The pipeline exposes the same choice
-as `cutoff="admission"` or `cutoff="discharge"`.
+as `cutoff="admission"` or `cutoff="discharge"`. See
+[Choosing a cutoff](../explanation/pipeline-and-cutoff.md#choosing-a-cutoff).
 
 ## Example
 
@@ -46,7 +47,6 @@ evidence = map_codes_to_comorbidities(
 features = build_comorbidity_features(
     cohort,
     evidence_tables=[evidence],
-
     cci_score=True,
 )
 # myocardial_infarction = 1; cci_score = 1
